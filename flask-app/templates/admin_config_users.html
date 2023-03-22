@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin config - Plataforma</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Importación de Bootstrap-->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <!--Importación de jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!--Importación de JavaScript de Bootstrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <!--Menú de navegación-->
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Back-office plataforma aserraderos</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="#">Usuarios</a></li>
+          <li><a href="#">Conexión base de datos</a></li>
+          <li class="active"><a href="#">Configuración base de datos</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!--Contenido principal-->
+    <div class="container">
+      <h1>CRUD de usuarios</h1>
+      <!--Tabla de usuarios-->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Correo electrónico</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!--Aquí se mostrarán los usuarios-->
+        </tbody>
+      </table>
+      <!--Botón para agregar usuario-->
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#agregarUsuarioModal"
+      >
+        Agregar usuario
+      </button>
+      <!--Modal para agregar usuario-->
+      <div
+        class="modal fade"
+        id="agregarUsuarioModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">Agregar usuario</h4>
+            </div>
+            <div class="modal-body">
+              <!--Formulario para agregar usuario-->
+              <form>
+                <div class="form-group">
+                  <label for="nombre">Nombre:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nombre"
+                    name="nombre"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="correo">Correo electrónico:</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="correo"
+                    name="correo"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="telefono">Teléfono:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="telefono"
+                    name="telefono"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-default"
+                data
+                -dismiss="modal"
+              >
+                Cerrar
+              </button>
+              <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      php
+
+      <!--Modal para editar usuario-->
+      <div
+        class="modal fade"
+        id="editarUsuarioModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">Editar usuario</h4>
+            </div>
+            <div class="modal-body">
+              <!--Formulario para editar usuario-->
+              <form>
+                <div class="form-group">
+                  <label for="nombre">Nombre:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nombre"
+                    name="nombre"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="correo">Correo electrónico:</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="correo"
+                    name="correo"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="telefono">Teléfono:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="telefono"
+                    name="telefono"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-default"
+                data-dismiss="modal"
+              >
+                Cerrar
+              </button>
+              <button type="button" class="btn btn-primary">
+                Guardar cambios
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Modal para eliminar usuario-->
+      <div
+        class="modal fade"
+        id="eliminarUsuarioModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">Eliminar usuario</h4>
+            </div>
+            <div class="modal-body">
+              <p>¿Está seguro de que desea eliminar este usuario?</p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-default"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-danger">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Scripts personalizados-->
+    <script>
+      //Aquí se pueden agregar scripts personalizados
+    </script>
+  </body>
+</html>

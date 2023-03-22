@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasarela Plataforma</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Pasarela Plataforma Aserraderos</h1>
+        <p> </p>
+    </header>
+    
+    <main>
+        <div class="option">
+            <h2>Configuraciones de Administración</h2>
+            <p>Configuración de Bases de datos, Usuarios Plataforma, Elección datos</p>
+            <a href="{{ url_for('usersapi.admin_config') }}">Select Option 1</a>
+        </div>
+        <div class="option">
+            <h2>Option 2</h2>
+            <p>Description for Option 2 goes here</p>
+            <a href="#">Select Option 2</a>
+        </div>
+    </main>
+</body>
+</html>

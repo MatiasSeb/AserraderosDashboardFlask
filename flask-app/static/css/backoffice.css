@@ -1,0 +1,88 @@
+/*Estilos generales*/
+body {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	background-color: #F2F2F2;
+	padding-top: 70px;
+}
+
+/*Estilos para la barra de navegación*/
+.navbar-inverse {
+	background-color: #337AB7;
+	border-color: #2E6DA4;
+}
+
+.navbar-inverse .navbar-brand {
+	color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus {
+	color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+	color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
+	color: #FFFFFF;
+	background-color: #2E6DA4;
+}
+
+/*Estilos para la tabla de usuarios*/
+.table {
+	background-color: #FFFFFF;
+}
+
+.table th,
+.table td {
+	border: 1px solid #CCCCCC;
+	padding: 10px;
+}
+
+.table th {
+	background-color: #F2F2F2;
+}
+
+/*Estilos para los botones*/
+.btn {
+	border-radius: 0;
+}
+
+.btn-primary {
+	background-color: #337AB7;
+	border-color: #2E6DA4;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+	background-color: #2E6DA4;
+	border-color: #285E8E;
+}
+
+.btn-danger {
+	background-color: #D9534F;
+	border-color: #D43F3A;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+	background-color: #C9302C;
+	border-color: #AC2925;
+}
+
+/*Estilos para los modales*/
+.modal-header {
+	background-color: #F2F2F2;
+}
+
+.modal-title {
+	font-weight: bold;
+}
+
+.modal-footer {
+	background-color: #F2F2F2;
+	border-top: 1px solid #CCCCCC;
+}

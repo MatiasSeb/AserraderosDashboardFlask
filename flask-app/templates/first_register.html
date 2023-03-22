@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Primer registro administrador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <div id="logbox">
+        <form id="signup" method="POST" action="/first_register">
+            <h1>Crea las credenciales del administrador</h1>
+            <input name="username" type="text" placeholder="What's your username?" autofocus required class="input pass">
+            <input name="email" type="email" placeholder="Email address" class="input pass">
+            <input name="password" type="password" placeholder="Choose a password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required class="input pass">
+            <input type="submit" value="Registrar administrador" class="inputButton">
+        </form>
+        <div id="message">
+          <h3>Password must contain the following:</h3>
+          <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+          <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+          <p id="number" class="invalid">A <b>number</b></p>
+          <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+      </div>
+      </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='scripts/validation.js') }}"></script>
+  </body>
+</html>

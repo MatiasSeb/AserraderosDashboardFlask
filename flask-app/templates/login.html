@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Login plataforma</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="login-form">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <form action="/login" method="POST">
+    <h1>Login</h1>
+    <div class="content">
+      <div class="input-field">
+        <input name="email" type="email" placeholder="Email" autocomplete="off" required>
+      </div>
+      <div class="input-field">
+        <input name="password" type="password" placeholder="Password" required>
+      </div>
+      <a href="#" class="link">Forgot Your Password?</a>
+    </div>
+    <div class="action">
+      <button>Sign in</button>
+    </div>
+  </form>
+</div>
+<!-- partial -->
+  <script src="{{ url_for('static', filename='scripts/scripts.js') }}"></script>
+  <script>
+    const form = document.querySelector('#login-form');
+  
+    form.addEventListener('submit', (event) => {
+      // Prevenir el envío del formulario al servidor
+      event.preventDefault();
+  
+      // Obtener los valores del formulario
+      const email = form.elements.email.value;
+      const password = form.elements.password.value;
+  
+      // Validar los valores
+      if (!email || !password) {
+        alert('Please enter your email and password.');
+        return;
+      }
+      if (email )
+  
+      // Enviar el formulario al servidor
+      form.submit();
+    });
+  </script>
+</body>
+</html>
