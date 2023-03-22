@@ -162,3 +162,5 @@ cython_debug/
 #this is to ignore the secrets file [replaced with a dummy file]
 dashboard/.streamlit/secrets.toml
 .dashboard/.streamlit/secrets.toml
+flask-app/.env
+.flask-app/.env
