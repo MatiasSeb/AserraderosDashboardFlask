@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
-from werkzeug.security import generate_password_hash, check_password_hash
-from app import db
+from config.extensions import db
+from flask_bcrypt import check_password_hash, generate_password_hash
 Base = db.Model
 
 
@@ -14,7 +14,7 @@ class User(Base, UserMixin):
     password = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     
-    role = relationship("Role", back_populates="users")
+    role = relationship("Role", backref="users")
     
     def __init__(self, username, email, password, role_id):
         self.username = username
@@ -25,18 +25,18 @@ class User(Base, UserMixin):
     def get_id(self):
         return self._id
     
-    def __repr__(self):
-        return f"User('{self.username}'"
-    
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
-    def generate_password_hash(password):
+    def generate_password(password):
         return generate_password_hash(password)
     
-    def is_admin(role_id):
+    def is_admin(role_id):        
         admin_role = Role.query.filter_by(role_name='Admin').first()
         return role_id==admin_role.id
+    
+    def __repr__(self):
+        return f"User('{self.username}'"
 
 class Role(Base):
     __tablename__ = 'roles'
@@ -44,7 +44,8 @@ class Role(Base):
     id = db.Column(db.Integer, primary_key=True, index=True)
     role_name = db.Column(db.String(15), unique=True, nullable=False)
     
-    users = relationship("User", back_populates="role")
+    def __repr__(self):
+        return self.role_name
     
     @staticmethod
     def seed():

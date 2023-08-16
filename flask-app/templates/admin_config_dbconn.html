@@ -19,18 +19,56 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Back-office plataforma aserraderos</a>
+          <a class="navbar-brand">Back-office plataforma aserraderos</a>
         </div>
         <ul class="nav navbar-nav">
-          <li><a href="#">Usuarios</a></li>
-          <li class="active"><a href="#">Conexión base de datos</a></li>
-          <li><a href="#">Configuración base de datos</a></li>
+          <li><a href="{{ url_for('userRoutes.admin_users') }}">Usuarios</a></li>
+          <li class="active"><a href="{{url_for('databaseRoutes.admin_config_dbconn')}}">Conexión base de datos</a></li>
+          <li><a href="{{url_for('databaseRoutes.admin_config_data')}}">Configuración base de datos</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{{url_for('userRoutes.pasarela')}}">Volver a la pasarela</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{{url_for('userRoutes.logout')}}">Cerrar sesión</a></li>
         </ul>
       </div>
     </nav>
 
     <!--Contenido principal-->
     <div class="container">
+      <h1>Conexión a base de datos</h1>
+      <form action="" method="POST">
+        <label for="db_host">Host:</label>
+        <input type="text" name="db_host" required><br><br>
+        
+        <label for="db_port">Puerto:</label>
+        <input type="number" name="db_port" required><br><br>
+        
+        <label for="db_name">Nombre de la base de datos:</label>
+        <input type="text" name="db_name" required><br><br>
+        
+        <label for="db_user">Usuario:</label>
+        <input type="text" name="db_user" required><br><br>
+        
+        <label for="db_password">Contraseña:</label>
+        <input type="password" name="db_password" required><br><br>
+        
+        <button type="submit">Conectar</button>
+      </form>
+      
+      {% if loading %}
+      <div id="loading-animation">
+        <p>Conectando a la base de datos...</p>
+        <img src="/static/loading.gif" alt="Cargando...">
+      </div>
+      {% endif %}
+      
+      {% if error %}
+      <div id="error-message">
+        <p>{{ error }}</p>
+      </div>
+      {% endif %}
       
     </div>
 

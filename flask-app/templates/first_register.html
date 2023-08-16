@@ -6,24 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Primer registro administrador</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.bundle.min.js"></script>
   </head>
   <body>
     <div class="container">
       <div id="logbox">
-        <form id="signup" method="POST" action="/first_register">
-            <h1>Crea las credenciales del administrador</h1>
-            <input name="username" type="text" placeholder="What's your username?" autofocus required class="input pass">
-            <input name="email" type="email" placeholder="Email address" class="input pass">
-            <input name="password" type="password" placeholder="Choose a password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required class="input pass">
-            <input type="submit" value="Registrar administrador" class="inputButton">
-        </form>
-        <div id="message">
-          <h3>Password must contain the following:</h3>
-          <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-          <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
-          <p id="number" class="invalid">A <b>number</b></p>
-          <p id="length" class="invalid">Minimum <b>8 characters</b></p>
-      </div>
+        <div class="col">
+          <form id="signup" method="POST" action="/first_register">
+            <h1 class="card-title text-center">Crea las credenciales del administrador</h1>
+            {{ form.hidden_tag() }}
+            <div class="mb-3" style="text-align: center;">
+              {{ form.username.label }} {{ form.username(class="input pass") }}
+            </div>
+            <div class="mb-3" style="text-align: center;">
+              {{ form.email.label }} {{ form.email(class="input pass") }}
+            </div>
+            <div class="mb-3" style="text-align: center;">
+              {{ form.pwd.label }} {{ form.pwd(id="pwd", class="input pass") }}
+            </div>
+            <div class="mb-3" style="text-align: center;">
+              {{ form.c_pwd.label }} {{ form.c_pwd(id="c_pwd", class="input pass") }}
+            </div>
+            {{ form.submit(class="inputButton") }}
+          </form>
+        </div>
+        <div id="col">
+          <h3>La contraseña debe contener lo siguiente:</h3>
+          <p id="letter" class="invalid">Al menos una letra <b>minúscula</b></p>
+          <p id="capital" class="invalid">Al menos una letra <b>mayúscula (o capital)</b> </p>
+          <p id="number" class="invalid">Al menos un <b>número</b></p>
+          <p id="length" class="invalid">Mínimo <b>8 carácteres</b></p>
+        </div>
       </div>
     </div>
     

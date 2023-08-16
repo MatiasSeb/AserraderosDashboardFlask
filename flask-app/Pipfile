@@ -5,13 +5,19 @@ name = "pypi"
 
 [packages]
 flask = "*"
+flask-bcrypt = "*"
 flask-login = "*"
+flask-migrate = "*"
 flask-restful = "*"
 flask-sqlalchemy = "*"
+flask-wtf = "*"
 python-dotenv = "*"
-black = "*"
 mysqlclient = "*"
+mysql-replication = "*"
+sqlalchemy = "*"
 email-validator = "*"
+pytest = "*"
+wtforms = "*"
 
 [dev-packages]
 

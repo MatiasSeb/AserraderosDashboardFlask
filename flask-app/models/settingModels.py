@@ -1,5 +1,5 @@
-from sqlalchemy.orm import relationship
-from app import db, app
+from config.extensions import db
+from flask import current_app
 from models.userModels import User
 Base = db.Model
 
@@ -12,7 +12,7 @@ class GlobalSettings(Base):
     
     @staticmethod
     def initialize_settings():
-        with app.app_context():
+        with current_app.app_context():
             settings = GlobalSettings.query.all()
             
             if not settings:

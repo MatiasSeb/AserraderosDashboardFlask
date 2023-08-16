@@ -1,6 +1,8 @@
-from app import app, db
+from app import create_app, db
 from models.settingModels import GlobalSettings
 from models.userModels import Role
+
+app = create_app()
 
 if __name__ == "__main__":
     with app.app_context():

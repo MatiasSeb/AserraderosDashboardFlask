@@ -4,214 +4,227 @@
     <title>Admin config - Plataforma</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--Importación de Bootstrap-->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+    <!-- Include the Bootstrap 5 CSS -->
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <!-- Include the Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
     <!--Importación de jQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
     <!--Importación de JavaScript de Bootstrap-->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
   </head>
   <body>
     <!--Menú de navegación-->
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Back-office plataforma aserraderos</a>
+          <a class="navbar-brand">Back-office plataforma aserraderos</a>
         </div>
         <ul class="nav navbar-nav">
-          <li><a href="#">Usuarios</a></li>
-          <li><a href="#">Conexión base de datos</a></li>
-          <li class="active"><a href="#">Configuración base de datos</a></li>
+          <li class="active"><a href="{{ url_for('userRoutes.admin_users') }}">Usuarios</a></li>
+          <li><a href="{{url_for('databaseRoutes.admin_config_dbconn')}}">Conexión base de datos</a></li>
+          <li><a href="{{url_for('databaseRoutes.admin_config_data')}}">Configuración base de datos</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{{url_for('userRoutes.pasarela')}}">Volver a la pasarela</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="{{url_for('userRoutes.logout')}}">Cerrar sesión</a></li>
         </ul>
       </div>
     </nav>
 
     <!--Contenido principal-->
     <div class="container">
-      <h1>CRUD de usuarios</h1>
+      <h2 style="text-align: center;">Administración Usuarios</h2>
       <!--Tabla de usuarios-->
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>ID Usuario</th>
             <th>Nombre</th>
-            <th>Correo electrónico</th>
-            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Rol Usuario</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <!--Aquí se mostrarán los usuarios-->
+          {% for usuario in usuarios %}
+          <tr>
+            <td> {{usuario._id}}</td>
+            <td> {{usuario.username}}</td>
+            <td> {{usuario.email}}   </td>
+            <td> {{usuario.role.role_name}} </td>
+            <td>
+              <button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#editarUsuarioModal" 
+                data-id="{{ usuario._id }}" 
+                data-username="{{ usuario.username }}"
+                data-email="{{ usuario.email }}"
+                data-role="{{ usuario.role_id }}">Editar</button>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarUsuarioModal">Eliminar</button>
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
       </table>
       <!--Botón para agregar usuario-->
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-toggle="modal"
-        data-target="#agregarUsuarioModal"
-      >
-        Agregar usuario
-      </button>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarUsuarioModal">Agregar usuario</button>
       <!--Modal para agregar usuario-->
-      <div
-        class="modal fade"
-        id="agregarUsuarioModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-      >
-        <div class="modal-dialog" role="document">
+      <div class="modal fade" id="agregarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm modal-dialog-scrollable" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
               <h4 class="modal-title" id="myModalLabel">Agregar usuario</h4>
             </div>
             <div class="modal-body">
               <!--Formulario para agregar usuario-->
-              <form>
-                <div class="form-group">
-                  <label for="nombre">Nombre:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="nombre"
-                    name="nombre"
-                  />
+              <form class="d-flex flex-column" method="POST" action="{{ url_for('userRoutes.create_user') }}">
+                {{ createuserform.hidden_tag() }}
+                <div class="form-group ">
+                  {{ createuserform.username.label(class="control-label") }}
+                  {{ createuserform.username(class="form-control") }}
+                  {% for error in createuserform.username.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
                 </div>
                 <div class="form-group">
-                  <label for="correo">Correo electrónico:</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="correo"
-                    name="correo"
-                  />
+                  {{ createuserform.email.label(class="control-label") }}
+                  {{ createuserform.email(class="form-control") }}
+                  {% for error in createuserform.email.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
                 </div>
                 <div class="form-group">
-                  <label for="telefono">Teléfono:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="telefono"
-                    name="telefono"
-                  />
+                  {{ createuserform.pwd.label(class="control-label") }}
+                  <div class="input-group" id="show_hide_password">
+                    {{ createuserform.pwd(class="form-control", id="pwd") }}
+                      <button class="btn btn-outline-secondary" type="button" id="togglePassword" >
+                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                      </button>
+                  </div>
+                  {% for error in createuserform.pwd.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ createuserform.c_pwd.label(class="control-label") }}
+                  <div class="input-group" id="show_hide_password">
+                    {{ createuserform.c_pwd(class="form-control", id="c_pwd") }}
+                      <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                      </button>
+                  </div>
+                  {% for error in createuserform.c_pwd.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ createuserform.role_id.label(class="control-label") }}
+                  {{ createuserform.role_id(class="form-control") }}
+                  {% for error in createuserform.role_id.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                  </button>
+                  {{ createuserform.submit(class="btn btn-primary") }}
                 </div>
               </form>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-default"
-                data
-                -dismiss="modal"
-              >
-                Cerrar
-              </button>
-              <button type="button" class="btn btn-primary">Guardar</button>
             </div>
           </div>
         </div>
       </div>
 
-      php
-
       <!--Modal para editar usuario-->
-      <div
-        class="modal fade"
-        id="editarUsuarioModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-      >
-        <div class="modal-dialog" role="document">
+      <div class="modal fade" id="editarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm modal-dialog-scrollable" style="overflow-y: auto;" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
               <h4 class="modal-title" id="myModalLabel">Editar usuario</h4>
             </div>
             <div class="modal-body">
-              <!--Formulario para editar usuario-->
-              <form>
+              <!-- Formulario para editar usuario -->
+              <form method="POST" id="editForm" action="{{ url_for('userRoutes.update_user', _id=usuarios[0]['_id']) }}">
+                {{ edituserform.hidden_tag() }}
                 <div class="form-group">
-                  <label for="nombre">Nombre:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="nombre"
-                    name="nombre"
-                  />
+                  {{ edituserform.username.label(class="control-label") }}
+                  {{ edituserform.username(class="form-control", id="username") }}
+                  {% for error in edituserform.username.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
                 </div>
                 <div class="form-group">
-                  <label for="correo">Correo electrónico:</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="correo"
-                    name="correo"
-                  />
+                  {{ edituserform.email.label(class="control-label") }}
+                  {{ edituserform.email(class="form-control", id="email") }}
+                  {% for error in edituserform.email.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
                 </div>
                 <div class="form-group">
-                  <label for="telefono">Teléfono:</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="telefono"
-                    name="telefono"
-                  />
+                  {{ edituserform.pwd.label(class="control-label") }}
+                  <div class="input-group" id="show_hide_password">
+                    {{ edituserform.pwd(class="form-control form-control-sm", id="pwd") }}
+                      <button class="btn btn-outline-secondary" type="button" id="togglePassword" >
+                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                      </button>
+                  </div>
+                  {% for error in edituserform.pwd.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ edituserform.c_pwd.label(class="control-label") }}
+                  <div class="input-group" id="show_hide_password">
+                    {{ edituserform.c_pwd(class="form-control form-control-sm", id="c_pwd") }}
+                      <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                      </button>
+                  </div>
+                  {% for error in edituserform.c_pwd.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ edituserform.role_id.label(class="control-label") }}
+                  {{ edituserform.role_id(class="form-control", id="role_id", choices=[]) }}
+                  {% for error in edituserform.role_id.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                  </button>
+                  {{ edituserform.submit(class="btn btn-primary") }}
                 </div>
               </form>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-default"
-                data-dismiss="modal"
-              >
-                Cerrar
-              </button>
-              <button type="button" class="btn btn-primary">
-                Guardar cambios
-              </button>
             </div>
           </div>
         </div>
       </div>
-
+    
       <!--Modal para eliminar usuario-->
-      <div
-        class="modal fade"
-        id="eliminarUsuarioModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-      >
+      <div class="modal fade" id="eliminarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
               <h4 class="modal-title" id="myModalLabel">Eliminar usuario</h4>
@@ -220,23 +233,54 @@
               <p>¿Está seguro de que desea eliminar este usuario?</p>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-default"
-                data-dismiss="modal"
-              >
-                Cancelar
-              </button>
-              <button type="button" class="btn btn-danger">Eliminar</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" >Eliminar</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!--Scripts personalizados-->
-    <script>
-      //Aquí se pueden agregar scripts personalizados
+  <!--Scripts personalizados-->
+  <!-- jQuery -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      $(".edit").click(function() {
+        var userId = $(this).data("id");
+        var username = $(this).data("username");
+        var email = $(this).data("email");
+        var role = $(this).data("role");
+    
+        // Populate form fields with user information
+        $("#editarUsuarioModal").find("#username").val(username);
+        $("#editarUsuarioModal").find("#email").val(email);
+        $("#editarUsuarioModal").find("#role_id").val(role);
+        
+        // Set the form action URL to include the user ID
+        $("#editForm").attr("action", "/admin/users/" + userId);
+      });
+    });
     </script>
+  <!--Password toggle -->
+  <script>
+    // Script for password visibility toggle
+    $(document).ready(function() {
+        $("#togglePassword").on('click', function() {
+          var passwordInput = $("#pwd");
+          var passwordFieldType = passwordInput.attr("type");
+  
+          if (passwordFieldType === "password") {
+            passwordInput.attr("type", "text");
+            $(this).find("i").removeClass("fa-eye-slash").addClass("fa-eye");
+          } else {
+            passwordInput.attr("type", "password");
+            $(this).find("i").removeClass("fa-eye").addClass("fa-eye-slash");
+          }
+        });
+    });
+  </script>
   </body>
 </html>

@@ -86,3 +86,20 @@ body {
 	background-color: #F2F2F2;
 	border-top: 1px solid #CCCCCC;
 }
+
+
+.password-toggle {
+    position: relative;
+}
+
+.password-toggle .input-group-addon {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 2;
+    opacity: 0.5;
+}
+
+.password-toggle .input-group-addon span {
+    color: inherit;
+}
