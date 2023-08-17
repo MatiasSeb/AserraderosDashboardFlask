@@ -9,6 +9,7 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
     <!--Importación de jQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!--Importación de JavaScript de Bootstrap-->
@@ -37,44 +38,261 @@
 
     <!--Contenido principal-->
     <div class="container">
-      <h1>Conexión a base de datos</h1>
-      <form action="" method="POST">
-        <label for="db_host">Host:</label>
-        <input type="text" name="db_host" required><br><br>
-        
-        <label for="db_port">Puerto:</label>
-        <input type="number" name="db_port" required><br><br>
-        
-        <label for="db_name">Nombre de la base de datos:</label>
-        <input type="text" name="db_name" required><br><br>
-        
-        <label for="db_user">Usuario:</label>
-        <input type="text" name="db_user" required><br><br>
-        
-        <label for="db_password">Contraseña:</label>
-        <input type="password" name="db_password" required><br><br>
-        
-        <button type="submit">Conectar</button>
-      </form>
-      
-      {% if loading %}
-      <div id="loading-animation">
-        <p>Conectando a la base de datos...</p>
-        <img src="/static/loading.gif" alt="Cargando...">
+      <h2 style="text-align: center;">Manejo de bases de datos</h2>
+      <!--Tabla de usuarios-->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID Conexión</th>
+            <th>Nombre Conexión</th>
+            <th>Nombre de usuario de conexión</th>
+            <th>IP Conexión</th>
+            <th>Puerto conexión</th>
+            <th>Nombre de la base de datos de la conexión</th>
+            <th>Fecha de creación</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for conn in conns %}
+          <tr>
+            <td> {{conn._id}}</td>
+            <td> {{conn.connection_name}}</td>
+            <td> {{conn.conn_username}}</td>
+            <td> {{conn.conn_ip}} </td>
+            <td> {{conn.conn_port}} </td>
+            <td> {{conn.conn_dbname}} </td>
+            <td> {{conn.added_date}} </td>
+            <td>
+              <button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#editarConexionModal" 
+                data-id="{{ conn._id }}" 
+                data-nameconn="{{ conn.connection_name }}"
+                data-connuser="{{ conn.conn_username }}"
+                data-connip="{{ conn.conn_ip }}"
+                data-connport="{{ conn.conn_port }}"
+                data-conndbname="{{ conn.conn_dbname }}"
+                >
+                Editar
+              </button>
+              <button type="button" data-id="{{ conn._id }}"  class="btn btn-danger delete" data-toggle="modal" data-target="#eliminarConexionModal">Eliminar</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <!--Botón para añadir conexiones de bdd-->
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#crearConexionModal">Crear conexión BDD</button>
+      <!--Modal para añadir conexiones de bdd-->
+      <div class="modal fade" id="crearConexionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">Añadir conexión BDD</h4>
+            </div>
+            <div class="modal-body">
+              <!--Formulario para añadir conexiones de bdd-->
+              <form class="d-flex flex-column" method="POST" action="{{ url_for('databaseRoutes.create_conn') }}">
+                {{ createconnform.hidden_tag() }}
+                <div class="form-group">
+                  {{ createconnform.connection_name.label(class="control-label") }}
+                  {{ createconnform.connection_name(class="form-control") }}
+                  {% for error in createconnform.connection_name.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ createconnform.conn_username.label(class="control-label") }}
+                  {{ createconnform.conn_username(class="form-control") }}
+                  {% for error in createconnform.conn_username.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ createconnform.conn_password.label(class="control-label") }}
+                  <div class="input-group" id="show_hide_password">
+                    {{ createconnform.conn_password(class="form-control", id="pwd") }}
+                      <button class="btn btn-outline-secondary" type="button" id="togglePassword" >
+                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                      </button>
+                  </div>
+                  {% for error in createconnform.conn_password.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ createconnform.conn_ip.label(class="control-label") }}
+                  {{ createconnform.conn_ip(class="form-control") }}
+                  {% for error in createconnform.conn_ip.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ createconnform.conn_port.label(class="control-label") }}
+                  {{ createconnform.conn_port(class="form-control") }}
+                  {% for error in createconnform.conn_port.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{ createconnform.conn_dbname.label(class="control-label") }}
+                  {{ createconnform.conn_dbname(class="form-control") }}
+                  {% for error in createconnform.conn_dbname.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                  </button>
+                  {{ createconnform.submit(class="btn btn-primary") }}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-      {% endif %}
-      
-      {% if error %}
-      <div id="error-message">
-        <p>{{ error }}</p>
+
+
+      <!--Modal para editar usuario-->
+      <div class="modal fade" id="editarConexionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm modal-dialog-scrollable" style="overflow-y: auto;" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">Editar Conexión</h4>
+            </div>
+            <div class="modal-body">
+              <!-- Formulario para editar usuario -->
+              <form method="POST" id="editForm" action="{{ url_for('databaseRoutes.update_conn', _id=conns[0]['_id']) }}">
+                {{ editconnform.hidden_tag() }}
+                <div class="form-group">
+                  {{  editconnform.connection_name.label(class="control-label") }}
+                  {{  editconnform.connection_name(class="form-control") }}
+                  {% for error in editconnform.connection_name.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{  editconnform.conn_username.label(class="control-label") }}
+                  {{  editconnform.conn_username(class="form-control") }}
+                  {% for error in  editconnform.conn_username.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{  editconnform.conn_password.label(class="control-label") }}
+                  <div class="input-group" id="show_hide_password">
+                    {{  editconnform.conn_password(class="form-control", id="pwd") }}
+                      <button class="btn btn-outline-secondary" type="button" id="togglePassword" >
+                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                      </button>
+                  </div>
+                  {% for error in editconnform.conn_password.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{  editconnform.conn_ip.label(class="control-label") }}
+                  {{  editconnform.conn_ip(class="form-control") }}
+                  {% for error in  editconnform.conn_ip.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{  editconnform.conn_port.label(class="control-label") }}
+                  {{  editconnform.conn_port(class="form-control") }}
+                  {% for error in  editconnform.conn_port.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="form-group">
+                  {{  editconnform.conn_dbname.label(class="control-label") }}
+                  {{  editconnform.conn_dbname(class="form-control") }}
+                  {% for error in  editconnform.conn_dbname.errors %}
+                    <span class="help-block">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cerrar
+                  </button>
+                  {{  editconnform.submit(class="btn btn-primary") }}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-      {% endif %}
-      
-    </div>
+
+      <div class="modal fade" id="eliminarConexionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title" id="myModalLabel">Eliminar conexion</h4>
+            </div>
+            <div class="modal-body">
+              <p>¿Está seguro de que desea eliminar esta conexion?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              <form id="delete-form" method="POST" style="display: inline;">
+                {{ deleteconnform.hidden_tag() }}
+                {{ deleteconnform.submit(class="btn btn-danger") }}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <!--Scripts personalizados-->
     <script>
-      //Aquí se pueden agregar scripts personalizados
+      $(document).ready(function() {
+        $(".edit").click(function() {
+          var dbId = $(this).data("id");
+          var nameconn = $(this).data("nameconn");
+          var connuser = $(this).data("connuser");
+          var connip = $(this).data("connip");
+          var connport = $(this).data("connport");
+          var conndbname = $(this).data("conndbname")
+      
+          // Populate form fields with user information
+          $("#editarConexionModal").find("#connection_name").val(nameconn);
+          $("#editarConexionModal").find("#conn_username").val(connuser);
+          $("#editarConexionModal").find("#conn_ip").val(connip);
+          $("#editarConexionModal").find("#conn_port").val(connport);
+          $("#editarConexionModal").find("#conn_dbname").val(conndbname);
+          
+          // Set the form action URL to include the user ID
+          $("#editForm").attr("action", "/admin/config_db/" + dbId);
+        });
+      });
+    </script>
+    <script>
+    </script>
+    <script>
+      // Script for password visibility toggle
+      $(document).ready(function() {
+          $("#togglePassword").on('click', function() {
+            var passwordInput = $("#pwd");
+            var passwordFieldType = passwordInput.attr("type");
+    
+            if (passwordFieldType === "password") {
+              passwordInput.attr("type", "text");
+              $(this).find("i").removeClass("fa-eye-slash").addClass("fa-eye");
+            } else {
+              passwordInput.attr("type", "password");
+              $(this).find("i").removeClass("fa-eye").addClass("fa-eye-slash");
+            }
+          });
+      });
     </script>
   </body>
 </html>

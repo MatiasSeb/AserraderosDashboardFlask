@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
-from wtforms.validators import InputRequired, DataRequired, Email, Length, EqualTo, ValidationError, Regexp
+from wtforms.validators import InputRequired, DataRequired, Email, Length, EqualTo, ValidationError, Regexp, Optional
 
 class FirstRegistrationForm(FlaskForm):
     username = StringField(
@@ -53,7 +53,6 @@ class CreateUserForm(FlaskForm):
     role_id = SelectField('Rol', choices=[], validators=[DataRequired()])
     submit = SubmitField('Crear usuario')
 
-
 class EditUserForm(FlaskForm):
     username = StringField(
         'Nombre de usuario', 
@@ -76,3 +75,37 @@ class EditUserForm(FlaskForm):
     )
     role_id = SelectField('Rol del usuario', choices=[], validators=[DataRequired()])
     submit = SubmitField('Modificar usuario')
+
+class DeleteForm(FlaskForm):
+    submit = SubmitField('Eliminar')
+
+class CreateDBConnForm(FlaskForm):
+    connection_name = StringField(
+        'Nombre de conexión', 
+        validators=[
+            DataRequired(), 
+            Length(min=8, max=50, message="Ingrese el nombre de conexión"),
+        ]
+    )
+    conn_username = StringField('Username', validators=[DataRequired()])
+    conn_password = StringField('Password', validators=[InputRequired()])
+    conn_ip = StringField('IP Address', validators=[DataRequired()])
+    conn_port = StringField('Port', validators=[DataRequired()])
+    conn_dbname = StringField('Database Name', validators=[DataRequired()])
+    submit = SubmitField('Crear conexión')
+
+class EditDBConnForm(FlaskForm):
+    connection_name = StringField(
+        'Nombre de conexión', 
+        validators=[
+            DataRequired(), 
+            Length(min=8, max=50, message="Ingrese el nombre de conexión"),
+        ]
+    )
+    conn_username = StringField('Username', validators=[DataRequired()])
+    conn_password = StringField('Password', validators=[InputRequired()])
+    conn_ip = StringField('IP Address', validators=[DataRequired()])
+    conn_port = StringField('Port', validators=[DataRequired()])
+    conn_dbname = StringField('Database Name', validators=[DataRequired()])
+    submit = SubmitField('Modificar conexión')
+

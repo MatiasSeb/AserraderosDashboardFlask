@@ -69,7 +69,7 @@
                 data-username="{{ usuario.username }}"
                 data-email="{{ usuario.email }}"
                 data-role="{{ usuario.role_id }}">Editar</button>
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarUsuarioModal">Eliminar</button>
+              <button type="button" id="delete-user" data-id="usuario._id" class="btn btn-danger" data-toggle="modal" data-target="#eliminarUsuarioModal">Eliminar</button>
             </td>
           </tr>
           {% endfor %}
@@ -234,7 +234,10 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-danger" >Eliminar</button>
+              <form id="delete-form" method="POST" style="display: inline;">
+                {{ deleteuserform.hidden_tag() }}
+                {{ deleteuserform.submit(class="btn btn-danger") }}
+              </form>
             </div>
           </div>
         </div>
@@ -263,7 +266,10 @@
         $("#editForm").attr("action", "/admin/users/" + userId);
       });
     });
-    </script>
+  </script>
+  <script>
+    
+  </script>  
   <!--Password toggle -->
   <script>
     // Script for password visibility toggle

@@ -57,7 +57,7 @@ def createUser(username, email, password, role):
         db.session.commit()
         return newUser
     else: 
-        return 'No funciona' 
+        return print('No funciona') 
 
 #UPDATE AN USER
 def updateUser(_id, username, email, password, role):
@@ -73,15 +73,19 @@ def updateUser(_id, username, email, password, role):
             userToUpdate.password = User.generate_password(password)
             userToUpdate.role_id = role
             db.session.commit()
-            return userToUpdate
+            return True
         else:
-            return 'No funciona'
+            return False
 
 #DELETE THE USER
 def deleteUser(_id):
     from models.userModels import User, db
     
     user = User.query.get_or_404(_id)
-    db.session.delete(user)
-    db.session.commit()
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return True
+    else:
+        return False
 

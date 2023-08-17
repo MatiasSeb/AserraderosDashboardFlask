@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, Response, request, redirect, url_f
 from config.extensions import login_manager
 from controllers.userController import *
 from flask_login import login_required
-from forms.forms import FirstRegistrationForm, LoginForm, CreateUserForm, EditUserForm
+from forms.forms import FirstRegistrationForm, LoginForm, CreateUserForm, EditUserForm, DeleteForm
 
 userRoutes = Blueprint('userRoutes', __name__)
 
@@ -75,8 +75,10 @@ def admin_users():
     edituserform = EditUserForm()
     edituserform.role_id.choices = role_choices
     
+    deleteuserform = DeleteForm()
+    
     users = getUsers()
-    return render_template("admin_config_users.html", createuserform=createuserform, edituserform=edituserform, usuarios=users, roles=role_choices)
+    return render_template("admin_config_users.html", createuserform=createuserform, edituserform=edituserform, deleteuserform=deleteuserform, usuarios=users, roles=role_choices)
 
 @userRoutes.route("/admin/users", methods=['POST'])
 @login_required
@@ -119,17 +121,21 @@ def update_user(_id):
             return redirect(url_for('userRoutes.admin_users'))
         else:
             print(edituserform.errors)
-    print(edituserform.errors)
+            flash('Hubo un error en el formulario')
     return redirect(url_for('userRoutes.admin_users'))
 
-@userRoutes.route("/admin/users/<int:_id>", methods=['GET', 'POST'])
+@userRoutes.route("/admin/users/delete_<int:_id>", methods=['POST'])
 @login_required
 def delete_user(_id):
-    if deleteUser(_id):
-        flash('Usuario eliminado')
-    else:
-        flash('Hubo un error al eliminar el usuario')
-    return redirect(url_for('admin_users'))
+    deleteuserform = DeleteForm()
+    if deleteuserform.validate_on_submit():
+        if deleteUser(_id):
+            flash('Usuario eliminado')
+            return redirect(url_for('userRoutes.admin_users'))
+        else:
+            flash('Hubo un error al eliminar el usuario')
+        return redirect(url_for('userRoutes.admin_users'))
+    print(deleteuserform.errors)
 
 
 @userRoutes.route("/logout")
