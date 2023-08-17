@@ -51,5 +51,6 @@ def deleteConnection(_id):
     if dbToDelete:
         db.session.delete(dbToDelete)
         db.session.commit()
+        return True
     else:
-        return 'no funciona'
+        return False

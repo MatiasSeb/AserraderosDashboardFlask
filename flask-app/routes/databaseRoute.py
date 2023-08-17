@@ -65,14 +65,10 @@ def delete_conn(_id):
     deleteconnform = DeleteForm()
     if deleteconnform.validate_on_submit():
         if deleteConnection(_id):
-            response = make_response('Success: Conexion eliminada')
-            response.headers['Content-Type'] = 'text/plain'
-            return response
+            redirect(url_for('databaseRoutes.admin_config_dbconn'))
         else:
-            flash('Hubo un error al eliminar la conexion')
-            response = make_response('Error: Hubo un error al eliminar la conexion')
-            response.headers['Content-Type'] = 'text/plain'
-            return response
+            print (deleteconnform.errors)
+            return redirect(url_for('databaseRoutes.admin_config_dbconn'))
 
 @databaseRoutes.route("/admin/config_data")
 @login_required

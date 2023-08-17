@@ -15,7 +15,6 @@ def load_user(_id):
 @userRoutes.route("/")
 def home():
     from models.settingModels import GlobalSettings
-    from models.userModels import User
     registerform = FirstRegistrationForm()
     loginform = LoginForm()
     

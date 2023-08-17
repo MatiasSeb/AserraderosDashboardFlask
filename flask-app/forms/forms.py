@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, HiddenField
 from wtforms.validators import InputRequired, DataRequired, Email, Length, EqualTo, ValidationError, Regexp, Optional
 
+#USER FORMS
 class FirstRegistrationForm(FlaskForm):
     username = StringField(
         'Nombre', 
@@ -76,9 +77,7 @@ class EditUserForm(FlaskForm):
     role_id = SelectField('Rol del usuario', choices=[], validators=[DataRequired()])
     submit = SubmitField('Modificar usuario')
 
-class DeleteForm(FlaskForm):
-    submit = SubmitField('Eliminar')
-
+#DATABASE FORMS
 class CreateDBConnForm(FlaskForm):
     connection_name = StringField(
         'Nombre de conexión', 
@@ -109,3 +108,11 @@ class EditDBConnForm(FlaskForm):
     conn_dbname = StringField('Database Name', validators=[DataRequired()])
     submit = SubmitField('Modificar conexión')
 
+
+
+
+#DELETE FORM FOR EVERYTHING
+class DeleteForm(FlaskForm):
+    class Meta:
+        csrf = True
+    submit = SubmitField('Eliminar')

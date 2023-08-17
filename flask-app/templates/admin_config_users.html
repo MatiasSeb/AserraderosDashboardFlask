@@ -4,7 +4,7 @@
     <title>Admin config - Plataforma</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <!-- Add these links in the head section of your HTML -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
     <!-- Include the Bootstrap 5 CSS -->
@@ -22,6 +22,7 @@
     
   </head>
   <body>
+    
     <!--Menú de navegación-->
     <nav class="navbar navbar-default">
       <div class="container-fluid">
@@ -69,7 +70,7 @@
                 data-username="{{ usuario.username }}"
                 data-email="{{ usuario.email }}"
                 data-role="{{ usuario.role_id }}">Editar</button>
-              <button type="button" id="delete-user" data-id="usuario._id" class="btn btn-danger" data-toggle="modal" data-target="#eliminarUsuarioModal">Eliminar</button>
+              <button type="button" data-id={{usuario._id}} class="btn btn-danger delete-user" data-toggle="modal" data-target="#eliminarUsuarioModal">Eliminar</button>
             </td>
           </tr>
           {% endfor %}
@@ -243,7 +244,16 @@
         </div>
       </div>
     </div>
-
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-dismissible fade show" role="alert">
+          {% for message in messages %}
+            <p class="mb-0">{{ message }}</p>
+          {% endfor %}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
+    {% endwith %}
   <!--Scripts personalizados-->
   <!-- jQuery -->
 
@@ -268,7 +278,14 @@
     });
   </script>
   <script>
-    
+    $(document).ready(function() {
+      // Event listener for delete button
+      $('.delete-user').on('click', function() {
+        var userId = $(this).data('id');
+        // Set the action attribute of the form
+        $('#delete-form').attr('action', '/admin/users/delete_' + userId);
+      });
+    });
   </script>  
   <!--Password toggle -->
   <script>

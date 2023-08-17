@@ -74,7 +74,7 @@
                 >
                 Editar
               </button>
-              <button type="button" data-id="{{ conn._id }}"  class="btn btn-danger delete" data-toggle="modal" data-target="#eliminarConexionModal">Eliminar</button>
+              <button type="button" data-id="{{ conn._id }}"  class="btn btn-danger delete-conn" data-toggle="modal" data-target="#eliminarConexionModal">Eliminar</button>
             </td>
           </tr>
           {% endfor %}
@@ -276,7 +276,15 @@
       });
     </script>
     <script>
-    </script>
+      $(document).ready(function() {
+        // Event listener for delete button
+        $('.delete-conn').on('click', function() {
+          var connId = $(this).data('id');
+          // Set the action attribute of the form
+          $('#delete-form').attr('action', '/admin/config_db/delete_' + connId);
+        });
+      });
+    </script>  
     <script>
       // Script for password visibility toggle
       $(document).ready(function() {
