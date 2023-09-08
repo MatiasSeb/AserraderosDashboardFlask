@@ -1,0 +1,21 @@
+{% block messages %}
+    {% if status == success %}
+    <div id="alerts-container" class="container mt-3 position-relative">
+        {% for message in messages %}
+        <div class="alert alert-primary position-absolute start-0" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif status == error %}
+    <div id="alerts-container" class="container mt-3 position-relative">
+        {% for message in messages %}
+        <div class="alert alert-primary position-absolute start-0" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endblock%}

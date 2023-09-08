@@ -1,0 +1,229 @@
+{% extends 'admin/base.html' %}
+{% block title %} Usuarios {% endblock %}
+
+{% block content %}
+<!--Contenido principal-->
+    <div class="container">
+        <h2 class="text-center">Administración Usuarios</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Usuario</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol Usuario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario._id }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.role.role_name }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary edit" data-bs-toggle="modal"
+                            data-bs-target="#editarUsuarioModal" data-id="{{ usuario._id }}"
+                            data-username="{{ usuario.username }}" data-email="{{ usuario.email }}"
+                            data-role="{{ usuario.role_id }}">Editar</button>
+                        <button type="button" data-id="{{ usuario._id }}" class="btn btn-danger delete-user"
+                            data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal">Eliminar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#agregarUsuarioModal">Agregar usuario
+        </button>
+
+        <!--Modal para agregar usuario-->
+        <div class="modal fade" id="agregarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-sm modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Agregar usuario</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="d-flex flex-column" method="POST" action="{{ url_for('userRoutes.create_user') }}">
+                            {{ createuserform.hidden_tag() }}
+                            <div class="mb-3">
+                                {{ createuserform.username.label(class="form-label") }}
+                                {{ createuserform.username(class="form-control") }}
+                                {% for error in createuserform.username.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createuserform.email.label(class="control-label") }}
+                                {{ createuserform.email(class="form-control") }}
+                                {% for error in createuserform.email.errors %}
+                                <span class="help-block">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createuserform.pwd.label(class="control-label") }}
+                                <div class="input-group" id="show_hide_password_1">
+                                    {{ createuserform.pwd(class="form-control", id="pwd") }}
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword_1">
+                                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                {% for error in createuserform.pwd.errors %}
+                                <span class="help-block">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createuserform.c_pwd.label(class="control-label") }}
+                                <div class="input-group" id="show_hide_password_2">
+                                    {{ createuserform.c_pwd(class="form-control", id="c_pwd") }}
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword_2">
+                                        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                {% for error in createuserform.c_pwd.errors %}
+                                <span class="help-block">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createuserform.role_id.label(class="control-label") }}
+                                {{ createuserform.role_id(class="form-control") }}
+                                {% for error in createuserform.role_id.errors %}
+                                <span class="help-block">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                {{ createuserform.submit(class="btn btn-primary") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal para editar usuario-->
+        <div class="modal fade" id="editarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-sm modal-dialog-scrollable" style="overflow-y: auto;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Editar usuario</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" id="editForm" action="{{ url_for('userRoutes.update_user', _id=usuarios[0]['_id']) }}">
+                            {{ edituserform.hidden_tag() }}
+                            <div class="mb-3">
+                                {{ edituserform.username.label(class="form-label") }}
+                                {{ edituserform.username(class="form-control", id="username") }}
+                                {% for error in edituserform.username.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ edituserform.email.label(class="form-label") }}
+                                {{ edituserform.email(class="form-control", id="email") }}
+                                {% for error in edituserform.email.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ edituserform.role_id.label(class="form-label") }}
+                                {{ edituserform.role_id(class="form-control", id="role_id") }}
+                                {% for error in edituserform.role_id.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                {{ edituserform.submit(class="btn btn-primary") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--Modal para eliminar usuario-->
+        <div class="modal fade" id="eliminarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Eliminar usuario</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Está seguro de que desea eliminar este usuario?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form id="delete-form" method="POST" class="d-inline">
+                            {{ deleteuserform.hidden_tag() }}
+                            {{ deleteuserform.submit(class="btn btn-danger") }}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block scripts %}
+        <!--Scripts personalizados-->
+        <!-- Script for editing user credentials-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var editButtons = document.querySelectorAll(".edit");
+                editButtons.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        var userId = this.dataset.id;
+                        var username = this.dataset.username;
+                        var email = this.dataset.email;
+                        var role = this.dataset.role;
+
+                        // Populate form fields with user information
+                        document.querySelector("#editarUsuarioModal #username").value = username;
+                        document.querySelector("#editarUsuarioModal #email").value = email;
+                        document.querySelector("#editarUsuarioModal #role_id").value = role;
+
+                        // Set the form action URL to include the user ID
+                        document.querySelector("#editForm").action = "/admin/users/" + userId;
+                    });
+                });
+            });
+        </script>
+
+        <!-- Delete user function-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var deleteButtons = document.querySelectorAll(".delete-user");
+                deleteButtons.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        var userId = this.dataset.id;
+
+                        // Set the action attribute of the form
+                        document.querySelector("#delete-form").action = "/admin/users/delete_" + userId;
+                    });
+                });
+            });
+        </script>
+        
+        <!--Password toggle -->
+        <script>
+            // Script for password visibility toggle
+            $(document).ready(function() {
+                $("#togglePassword_1, #togglePassword_2").click(function() {
+                    var input = $(this).parent().find("input");
+                    if (input.attr("type") === "password") {
+                        input.attr("type", "text");
+                        $(this).html('<i class="fa fa-eye" aria-hidden="true"></i>');
+                    } else {
+                        input.attr("type", "password");
+                        $(this).html('<i class="fa fa-eye-slash" aria-hidden="true"></i>');
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

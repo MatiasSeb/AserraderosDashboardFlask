@@ -1,0 +1,247 @@
+{% extends 'admin/base.html' %}
+{% block title %}
+Conexión
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="text-center">Almacén de bases de datos</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Conexión</th>
+                    <th>Nombre Conexión</th>
+                    <th>Nombre de usuario</th>
+                    <th>IP Conexión</th>
+                    <th>Puerto conexión</th>
+                    <th>Hostname base de datos</th>
+                    <th>Fecha de creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if conns %}
+                {% for conn in conns %}
+                <tr>
+                    <td>{{ conn._id }}</td>
+                    <td>{{ conn.connection_name }}</td>
+                    <td>{{ conn.conn_username }}</td>
+                    <td>{{ conn.conn_ip }}</td>
+                    <td>{{ conn.conn_port }}</td>
+                    <td>{{ conn.conn_dbname }}</td>
+                    <td>{{ conn.added_date }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary edit" data-bs-toggle="modal"
+                            data-bs-target="#editarConexionModal" data-id="{{ conn._id }}"
+                            data-nameconn="{{ conn.connection_name }}" data-connuser="{{ conn.conn_username }}"
+                            data-connip="{{ conn.conn_ip }}" data-connport="{{ conn.conn_port }}"
+                            data-conndbname="{{ conn.conn_dbname }}">Editar
+                        </button>
+                        <button type="button" data-id="{{ conn._id }}" class="btn btn-danger delete-conn"
+                            data-bs-toggle="modal" data-bs-target="#eliminarConexionModal">Eliminar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="8">
+                        <p class="text-center">No hay conexiones.</p>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <!--Botón para añadir conexiones de bdd-->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearConexionModal">
+            Crear conexión BDD
+        </button>
+        
+        <div class="modal fade" id="crearConexionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-sm modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Añadir conexión BDD</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="d-flex flex-column" method="POST" action="{{ url_for('databaseRoutes.create_conn') }}">
+                            {{ createconnform.hidden_tag() }}
+                            <div class="mb-3">
+                                {{ createconnform.connection_name.label(class="form-label") }}
+                                {{ createconnform.connection_name(class="form-control") }}
+                                {% for error in createconnform.connection_name.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createconnform.conn_username.label(class="form-label") }}
+                                {{ createconnform.conn_username(class="form-control") }}
+                                {% for error in createconnform.conn_username.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createconnform.conn_ip.label(class="form-label") }}
+                                {{ createconnform.conn_ip(class="form-control") }}
+                                {% for error in createconnform.conn_ip.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createconnform.conn_port.label(class="form-label") }}
+                                {{ createconnform.conn_port(class="form-control") }}
+                                {% for error in createconnform.conn_port.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                {{ createconnform.conn_dbname.label(class="form-label") }}
+                                {{ createconnform.conn_dbname(class="form-control") }}
+                                {% for error in createconnform.conn_dbname.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <!-- Similar adjustments for other form groups -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cerrar
+                                </button>
+                                {{ createconnform.submit(class="btn btn-primary") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        {% if conns %}
+            <!--Modal para editar usuario-->
+            <div class="modal fade" id="editarConexionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-sm modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="myModalLabel">Editar Conexión</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" id="editForm" action="{{ url_for('databaseRoutes.update_conn', _id=conns[0]['_id']) }}">
+                                {{ editconnform.hidden_tag() }}
+                                <div class="mb-3">
+                                    {{ editconnform.connection_name.label(class="form-label") }}
+                                    {{ editconnform.connection_name(class="form-control") }}
+                                    {% for error in editconnform.connection_name.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ editconnform.conn_username.label(class="form-label") }}
+                                    {{ editconnform.conn_username(class="form-control") }}
+                                    {% for error in editconnform.conn_username.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ editconnform.conn_ip.label(class="form-label") }}
+                                    {{ editconnform.conn_ip(class="form-control") }}
+                                    {% for error in editconnform.conn_ip.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ editconnform.conn_port.label(class="form-label") }}
+                                    {{ editconnform.conn_port(class="form-control") }}
+                                    {% for error in editconnform.conn_port.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="mb-3">
+                                    {{ editconnform.conn_dbname.label(class="form-label") }}
+                                    {{ editconnform.conn_dbname(class="form-control") }}
+                                    {% for error in editconnform.conn_dbname.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Cerrar
+                                    </button>
+                                    {{ editconnform.submit(class="btn btn-primary") }}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="modal fade" id="eliminarConexionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Eliminar conexión</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Está seguro de que desea eliminar esta conexión?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <form id="delete-form" method="POST" class="d-inline">
+                                {{ deleteconnform.hidden_tag() }}
+                                {{ deleteconnform.submit(class="btn btn-danger") }}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    {% block scripts %}
+        <!--Scripts personalizados-->
+        <!--Editar conexión-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var editButtons = document.querySelectorAll(".edit");
+                editButtons.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        const dbId = this.dataset.id;
+                        const nameconn = this.dataset.nameconn;
+                        const connuser = this.dataset.connuser;
+                        const connip = this.dataset.connip;
+                        const connport = this.dataset.connport;
+                        const conndbname = this.dataset.conndbname;
+        
+                        // Populate form fields with user information
+                        const modal = document.getElementById("editarConexionModal");
+                        modal.querySelector("#connection_name").value = nameconn;
+                        modal.querySelector("#conn_username").value = connuser;
+                        modal.querySelector("#conn_ip").value = connip;
+                        modal.querySelector("#conn_port").value = connport;
+                        modal.querySelector("#conn_dbname").value = conndbname;
+
+                        // Set the form action URL to include the user ID
+                        const editForm = document.getElementById("editForm");
+                        editForm.action = "/admin/config_db/" + dbId;
+                    });
+                });
+            });
+        </script>
+        
+        <!-- Eliminar conexión -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var deleteButtons = document.querySelectorAll(".delete-conn");
+                deleteButtons.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        var connId = this.dataset.id;
+        
+                        // Set the action attribute of the form
+                        document.querySelector("#delete-form").action = "/admin/config_db/delete_" + connId;
+                    });
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

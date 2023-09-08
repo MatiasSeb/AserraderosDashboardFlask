@@ -1,0 +1,36 @@
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: lightgray;">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand">Back-office</a>
+        </div>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item {% if request.path == url_for('userRoutes.admin_users') %}active{% endif %}">
+                <a class="nav-link" href="{{ url_for('userRoutes.admin_users') }}">Usuarios</a>
+            </li>
+            <li class="nav-item {% if request.path == url_for('databaseRoutes.admin_config_dbconn') %}active{% endif %}">
+                <a class="nav-link" href="{{url_for('databaseRoutes.admin_config_dbconn')}}">Conexión base de datos</a>
+            </li>
+            <li class="nav-item {% if request.path == url_for('databaseRoutes.admin_config_data') %}active{% endif %}">
+                <a class="nav-link" href="{{url_for('databaseRoutes.admin_config_data')}}">Configuración base de datos</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('userRoutes.pasarela')}}">Volver a la pasarela</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link">Bienvenido, {{current_user.username}}</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('userRoutes.logout')}}">Cerrar sesión</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+{% endblock %}

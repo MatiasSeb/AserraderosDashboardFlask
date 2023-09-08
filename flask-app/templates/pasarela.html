@@ -5,14 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pasarela Plataforma</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='icon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <header>
         <h1>Pasarela Plataforma Aserraderos</h1>
-        <button>
-            <a href="{{url_for('userRoutes.logout')}}">Cerrar sesión</a>
-        </button>
+        <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_authenticated %}
+                <li><a>Bienvenido, {{current_user.username}}</a></li>
+            {% endif %}
+        </ul>
+        <ul>
+            <button>
+                <a href="{{url_for('userRoutes.logout')}}">Cerrar sesión</a>
+            </button>
+        </ul>
     </header>
     
     <main>

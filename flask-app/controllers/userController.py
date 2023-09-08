@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import login_user
 
 #first register
 def firstRegister(username, email, password):
@@ -23,15 +22,17 @@ def loginUser(email, password):
     from models.userModels import User
     
     user = User.query.filter_by(email=email).first()
-    if user and user.check_password(password):
-        login_user(user)
-        if user.role_id == 1:
-            return redirect(url_for('userRoutes.pasarela'))
-        else:
-            return redirect(url_for('platform'))
+    if user:
+        if user.check_password(password):
+            login_user(user)
+            if user.role_id == 1:
+                return 1
+            else:
+                return 2
+        elif not user.check_password(password):
+            return 3
     else:
-        print('Datos incorrectos o mal escritos, algún problea hubo')
-        return redirect('login')
+        return 4
 
 
 #AQUI COMIENZA EL CRUD USUARIOS DE ADMIN CONFIG
@@ -51,8 +52,8 @@ def createUser(username, email, password, role):
     from models.userModels import User, db
     
     if username and email and password and role:
-        hashed_password = User.generate_password(password)
-        newUser = User(username, email, password=hashed_password, role_id=role)
+        hashed_pw = User.generate_password(password)
+        newUser = User(username, email, password=hashed_pw, role_id=role)
         db.session.add(newUser)
         db.session.commit()
         return newUser
@@ -60,17 +61,16 @@ def createUser(username, email, password, role):
         return print('No funciona') 
 
 #UPDATE AN USER
-def updateUser(_id, username, email, password, role):
+def updateUser(_id, username, email, role):
     from models.userModels import User, db
     
     userToUpdate = User.query.get(_id)
     if not userToUpdate:
         return "User not found", 404
-    else:
-        if username and email and password and role:
+    elif userToUpdate:
+        if username and email and role:
             userToUpdate.username = username
             userToUpdate.email = email
-            userToUpdate.password = User.generate_password(password)
             userToUpdate.role_id = role
             db.session.commit()
             return True

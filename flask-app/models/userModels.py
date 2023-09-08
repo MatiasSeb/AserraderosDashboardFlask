@@ -4,7 +4,6 @@ from config.extensions import db
 from flask_bcrypt import check_password_hash, generate_password_hash
 Base = db.Model
 
-
 class User(Base, UserMixin):
     __tablename__ = 'users'
     

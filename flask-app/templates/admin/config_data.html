@@ -1,0 +1,96 @@
+{% extends 'admin/base.html' %}
+{% block title %}Configuracion de datos{% endblock %}
+
+{% block content %}
+  <div class="container">
+    {% if not tables %}
+      <h3>No se ha encontrado una conexión establecida en el sistema.</h1>
+      <h3>Seleccione una de las bases de datos registradas, a conectar</h1>
+      <form id="dbform" method="POST" action="{{ url_for('databaseRoutes.get_tables_with_conn') }}">
+          {{ dbform.hidden_tag() }}
+          <div class="mb-3">
+              {{ dbform.selected_conn.label(class="control-label", id="conn_id") }}
+              {{ dbform.selected_conn(class="form-control", id="conn_id") }}
+          </div>
+          <button class="btn btn-danger" id="submitSelect">Conectar</button>
+        <!-- Modales de conexión -->
+        <div class="modal fade" id="databasePasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Acceso a base de datos</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <h5 class="text-center">Ingrese su contraseña de usuario para acceder a la base de datos</h2>
+              <div class="mb-3">
+                {{ dbform.db_pwd.label(class="control-label") }}
+                <div class="input-group" id="show_hide_password_1">
+                  {{ dbform.db_pwd(class="form-control", id="db_password") }}
+                  <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              {{ dbform.submit(class="btn btn-primary", id="submitDB")}}
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div id="connectionResult"></div>
+    {% endif %}
+    {% if tables %}
+      <h1>Ahora estas stremeando</h1>
+      <h1>Seleccione una de las tablas para obtener sus variables en tiempo real</h1>
+      <div id="tables-container">
+        {% for table in tables %}
+            <div>{{ table }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+
+  {% block scripts %}
+    <!--Scripts personalizados-->
+    <script>
+      $(document).ready(function() {
+        const modalElement = $('#databasePasswordModal');
+        const modal = new bootstrap.Modal(modalElement);
+        const form = $('#databaseForm');
+        const submitSelectButton = $('#submitSelect');
+        // Abre el modal al hacer clic en el botón de submit
+        submitSelectButton.on('click', function(e) {
+          e.preventDefault();
+          modal.show();
+        });
+      
+        modalElement.on('hidden.bs.modal', function() {
+          const backdrop = document.querySelector('.modal-backdrop');
+          if (backdrop) {
+            backdrop.remove();
+          }
+        });
+      });
+    </script>
+    
+    <!--Script for password visibility toggle -->
+    <script>
+      $(document).ready(function() {
+        $("#togglePassword").click(function() {
+            var input = $(this).parent().find("input");
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+                $(this).html('<i class="fa fa-eye" aria-hidden="true"></i>');
+            } else {
+                input.attr("type", "password");
+                $(this).html('<i class="fa fa-eye-slash" aria-hidden="true"></i>');
+            }
+        });
+    });
+    </script>
+  {% endblock %}
+{% endblock %}
