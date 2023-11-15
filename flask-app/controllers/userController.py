@@ -37,15 +37,20 @@ def loginUser(email, password):
 
 #AQUI COMIENZA EL CRUD USUARIOS DE ADMIN CONFIG
 #GET USERS
+def getUserByID(_id):
+    from models.userModels import User
+    user = User.query.get_or_404(_id)
+    return user
+
 def getUsers():
     from models.userModels import User
     from sqlalchemy.orm import joinedload
     
     users = User.query.options(joinedload(User.role)).all()
     if not users:
-        return "User not found", 404
+        return 'False'
     if users:
-        return users
+        return 'True' & users
 
 #CREATE USERS
 def createUser(username, email, password, role):

@@ -4,22 +4,21 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+asyncio = "*"
+email-validator = "*"
+flask = {version = "*", extras = ["async"]}
 flask-bcrypt = "*"
 flask-login = "*"
 flask-migrate = "*"
 flask-restful = "*"
+flask-socketio = "*"
 flask-sqlalchemy = "*"
 flask-wtf = "*"
-python-dotenv = "*"
 mysqlclient = "*"
-mysql-replication = "*"
+python-dotenv = "*"
 sqlalchemy = "*"
-email-validator = "*"
 pytest = "*"
 wtforms = "*"
-flask-socketio = "*"
-asyncio = "*"
-flask = {version = "*", extras = ["async"]}
 
 [dev-packages]
 

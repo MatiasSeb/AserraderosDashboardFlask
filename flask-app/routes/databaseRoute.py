@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, make_response
 from flask_login import login_required
-from forms.forms import CreateDBConnForm, EditDBConnForm, DeleteForm, DatabaseForm
+from forms.forms import CreateDBConnForm, EditDBConnForm, DeleteForm, SelectDatabaseForm
 from controllers.databaseController import *
 from models.databasesModels import Databases
 from models.settingModels import GlobalSettings
@@ -82,50 +82,56 @@ async def delete_conn(_id):
         return redirect(url_for('databaseRoutes.admin_config_dbconn'))
 
 #No se si aquí deba ir la api que toma la base de datos elegida
-@databaseRoutes.route("/admin/config_data", methods=['GET'])
+@databaseRoutes.route("/admin/config_data", methods=['GET', 'POST'])
 @login_required
 async def admin_config_data():
-    conns = getConnections()
     is_streaming = await GlobalSettings.is_streaming_data()
-    if is_streaming == 'True':
-        chosen_table = await GlobalSettings.get_chosen_table()
-        
-        return render_template("admin/config_data.html", is_streaming=is_streaming, chosen_table=chosen_table)
-    if is_streaming == 'False':
-        dbform = DatabaseForm()
-        databaseChoices = [(conn._id, f"{conn._id}. Usuario: {conn.conn_username}" " - " f"Nombre de la BD: {conn.conn_dbname}, Dirección IP: {conn.conn_ip}:{conn.conn_port} ") for conn in conns]
-        dbform.selected_conn.choices = databaseChoices
-        return render_template("admin/config_data.html", is_streaming=is_streaming, conns=conns, dbform=dbform)
-
-@databaseRoutes.route("/admin/config_data", methods=['POST'])
-@login_required
-async def get_tables_with_conn():
-    dbform = DatabaseForm()
-    conn_id = dbform.selected_conn.data
+    dbform = SelectDatabaseForm()
     
-    if dbform.validate_on_submit():
-        selected_bd = Databases.getConnById(conn_id)
-        db_pwd = dbform.db_pwd.data
-        conn_result = uriDatabaseBuilder(selected_bd, db_pwd)
-        if conn_result is not None:
-            tables = getSelectedDatabase(conn_result) 
+    if request.method == 'GET':
+        if is_streaming == 'True':
+            chosen_conn_name = await GlobalSettings.get_chosen_conn()
+            if chosen_conn_name in current_app.config['SQLALCHEMY_BINDS']:
+                engine = getUriBind(chosen_conn_name)
+                result = getSelectedDatabase(engine)
+                return render_template("admin/config_data.html", is_streaming=is_streaming, tables=result)
+        
+        if is_streaming == 'False':
+            conns = getConnections()
+            databaseChoices = [
+                (
+                    conn._id,
+                    f"{conn._id}. Usuario: {conn.conn_username} - Nombre de la BD: {conn.conn_dbname}, Dirección IP: {conn.conn_ip}:{conn.conn_port}"
+                )
+                for conn in conns
+            ]
+            dbform.selected_conn.choices = databaseChoices
+            return render_template("admin/config_data.html", is_streaming=is_streaming, conns=conns, dbform=dbform)
+    
+    elif request.method == 'POST':
+        conn_id = dbform.selected_conn.data
+        if dbform.validate_on_submit():
+            selected_bd = Databases.getConnById(conn_id)
+            db_pwd = dbform.db_pwd.data
+            result = uriDatabaseBuilder(selected_bd, db_pwd)
+            tables = getSelectedDatabase(result) 
             if tables:
-                message = 'Credenciales verificadas, y conexión establecida con el servidor. Obteniendo información'
+                message = 'Credenciales verificadas, y conexión establecida con el servidor. Estas son las tablas de tu BDD:{}'
                 response = make_response(jsonify({'status': 'success', 'message': message}), 201)
                 print(response.get_json())
-                return render_template(admin_config_data, tables) 
+                return render_template("admin/config_data.html", tables=tables) 
             else:
                 message = 'No hay tablas en la base de datos, verifica la conexión o tu base de datos a conectar.'
                 response = make_response(jsonify({'status': 'success-2', 'message': message}), 202)
                 print(response.get_json())
                 return response
-    else:
-        message = (f"Contraseña incorrecta u otro error procedente del formulario: {dbform.errors}")
-        response = make_response(jsonify({'status': 'error', 'message': message}), 402)
-        print(response.get_json())
-        return response
+        else:
+            message = f"Contraseña incorrecta u otro error procedente del formulario: {dbform.errors}"
+            response = make_response(jsonify({'status': 'error', 'message': message}), 402)
+            print(response.get_json())
+            return response
 
-@databaseRoutes.route("/admin/config_data", methods=['POST'])
+@databaseRoutes.route("/admin/chosen_table", methods=['GET', 'POST'])
 @login_required
-async def stream_selected():
+async def stream_chosen_table():
     pass

@@ -2,6 +2,7 @@ from flask import Flask
 import os
 from config.database import create_engine, create_Database, db_url, db_usersdbname, load_dotenv
 from config.extensions import db, login_manager
+from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_socketio import SocketIO
 
@@ -9,6 +10,7 @@ from flask_socketio import SocketIO
 load_dotenv()
 bcrypt = Bcrypt()
 socketio = SocketIO()
+migrate = Migrate()
 
 #app factory
 def create_app():
@@ -31,6 +33,9 @@ def create_app():
     bcrypt.init_app(app)
     login_manager.init_app(app)
     socketio.init_app(app)
+    #init migrate
+    import models
+    migrate.init_app(app, db)
     
     #login configurations
     login_manager.session_protection = "strong"

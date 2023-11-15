@@ -99,11 +99,15 @@ class EditDBConnForm(FlaskForm):
     conn_dbname = StringField('Database Name', validators=[DataRequired()])
     submit = SubmitField('Modificar conexión')
 
-class DatabaseForm(FlaskForm):
+class SelectDatabaseForm(FlaskForm):
     selected_conn = SelectField('Credenciales a elegir', choices=[], validators=[DataRequired()])
     db_pwd = PasswordField('Contraseña', validators=[DataRequired(), Length(min=8, max=20)], widget=widgets.PasswordInput(hide_value=False))
     submit = SubmitField('Conectar')
 
+class SelectTableFromDBForm(FlaskForm):
+    selected_table = SelectField('Tabla a elegir', choices=[], validators=[DataRequired()])
+    submit = SubmitField('Elegir tabla para stremear en tiempo real')
+    
 #DELETE FORM FOR EVERYTHING
 class DeleteForm(FlaskForm):
     class Meta:

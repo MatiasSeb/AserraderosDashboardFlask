@@ -3,24 +3,24 @@
 
 {% block content %}
   <div class="container">
-    {% if not tables %}
+    {% if is_streaming == 'False' %}
       <h3>No se ha encontrado una conexión establecida en el sistema.</h1>
       <h3>Seleccione una de las bases de datos registradas, a conectar</h1>
       <form id="dbform" method="POST" action="{{ url_for('databaseRoutes.get_tables_with_conn') }}">
-          {{ dbform.hidden_tag() }}
-          <div class="mb-3">
-              {{ dbform.selected_conn.label(class="control-label", id="conn_id") }}
-              {{ dbform.selected_conn(class="form-control", id="conn_id") }}
-          </div>
-          <button class="btn btn-danger" id="submitSelect">Conectar</button>
+        {{ dbform.hidden_tag() }}
+        <div class="mb-3">
+          {{ dbform.selected_conn.label(class="control-label", id="conn_id") }}
+          {{ dbform.selected_conn(class="form-control", id="conn_id") }}
+        </div>
+        <button class="btn btn-danger" id="submitSelect">Conectar</button>
         <!-- Modales de conexión -->
         <div class="modal fade" id="databasePasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Acceso a base de datos</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Acceso a base de datos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
             <div class="modal-body">
               <h5 class="text-center">Ingrese su contraseña de usuario para acceder a la base de datos</h2>
               <div class="mb-3">
@@ -42,8 +42,8 @@
       </form>
       <div id="connectionResult"></div>
     {% endif %}
-    {% if tables %}
-      <h1>Ahora estas stremeando</h1>
+    {% if is_streaming == 'True' %}
+      <h1>Estas stremeando esta </h1>
       <h1>Seleccione una de las tablas para obtener sus variables en tiempo real</h1>
       <div id="tables-container">
         {% for table in tables %}

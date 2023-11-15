@@ -1,8 +1,7 @@
 from config.extensions import db
 from datetime import datetime
-Base = db.Model
 
-class Databases(Base):
+class Databases(db.Model):
     __tablename__ = 'databases'
     
     _id = db.Column(db.Integer, primary_key=True)
@@ -23,7 +22,14 @@ class Databases(Base):
     def __repr__(self):
         return '<Databases &r>' % self.connection_name
     
-    def getConnById(self, _id):
+    def get_all_dbs(self):
+        dbconns = Databases.query.all()
+        if not dbconns:
+            return []
+        else:
+            return dbconns
+        
+    def get_conn_by_id(self, _id):
         conn = Databases.query.filter_by(self_id=_id).first()
         if conn:
             return conn

@@ -2,9 +2,8 @@ from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 from config.extensions import db
 from flask_bcrypt import check_password_hash, generate_password_hash
-Base = db.Model
 
-class User(Base, UserMixin):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     
     _id = db.Column(db.Integer, primary_key=True, index=True)
@@ -37,7 +36,7 @@ class User(Base, UserMixin):
     def __repr__(self):
         return f"User('{self.username}'"
 
-class Role(Base):
+class Role(db.Model):
     __tablename__ = 'roles'
     
     id = db.Column(db.Integer, primary_key=True, index=True)
